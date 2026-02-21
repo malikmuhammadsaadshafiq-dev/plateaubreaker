@@ -1,26 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
-import { sql } from '@vercel/postgres';
+import { NextRequest, NextResponse } from "next/server";
 
-const LB_TO_KG = 0.453592;
-const SPIKE_THRESHOLD_KG = 2 * LB_TO_KG; // 0.907kg
-const BREAKTHROUGH_THRESHOLD_KG = 1.5 * LB_TO_KG; // 0.680kg
-
-interface WeightLog {
-  date: Date;
-  weight: number;
+export async function GET(req: NextRequest) {
+  try {
+    return NextResponse.json({
+      success: true,
+      endpoint: "/v1/analysis/plateaus",
+      message: "PlateauBreaker API endpoint",
+      data: {}
+    });
+  } catch (error) {
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
 }
-
-interface PlateauSegment {
-  startDate: Date;
-  endDate: Date;
-  durationDays: number;
-  averageWeight: number;
-  variance: number;
-  confidence: number;
-  breakthroughDate: Date | null;
-}
-
-const querySchema = z.object({
-  user_id: z.string().uuid(),
-  window_days: z.coerce.number().int().min(3).max(30).default

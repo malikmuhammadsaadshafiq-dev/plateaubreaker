@@ -88,3 +88,4 @@ export interface Breakthrough {
   user_id: string;
   occurred_at: Date;
   weight_delta
+}
